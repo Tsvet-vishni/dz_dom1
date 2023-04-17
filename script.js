@@ -1,7 +1,7 @@
 const body = document.body
 const btn = document.querySelector('.btn')
 const messageBox = document.querySelector('#message')
-let on = localStorage.on === 'true'
+let isOn = localStorage.on === 'true'
 
 
 function getDate() {
@@ -16,43 +16,52 @@ function getDate() {
 }
 
 function turnOn() {
+    isOn = true
+    messageBox.innerText = `Last turn on: ${getDate()}`
+    saveState()
+    on()
+}
+
+function on(){
     body.style = 'background-color: black;'
     btn.innerText = 'Turn on'
-    on = true
-    messageBox.innerText = `Last turn on: ${getDate()}`
+    messageBox.innerText = localStorage.message
     messageBox.hidden = false 
-    saveState()
 }
 
 function turnOff() {
+    isOn = false
+    messageBox.innerText = `Last turn off: ${getDate()}`
+    saveState()
+    off()
+}
+
+function off() {
     body.style = 'background-color: bisque;'
     btn.innerText = 'Turn off'
-    on = false
-    messageBox.innerText = `Last turn off: ${getDate()}`
-    messageBox.hidden = false
-    saveState()
+    messageBox.innerText = localStorage.message
+    messageBox.hidden = false 
 }
 
 function saveState() {
-    localStorage.on = on
+    localStorage.on = isOn
     localStorage.message = messageBox.innerText
 }
 
-if (on) {
-    turnOn()
-} else {
-    turnOff()
-}
+
 
 body.hidden = false
 
 if (localStorage.message){
-    messageBox.innerText = localStorage.message
-    messageBox.hidden = false
-} 
+    if (isOn) {
+        on()
+    } else {
+        off()
+    }
+}
 
 btn.addEventListener('click', () => {
-    if (on) {
+    if (isOn) {
         turnOff()
     } else {
         turnOn()
